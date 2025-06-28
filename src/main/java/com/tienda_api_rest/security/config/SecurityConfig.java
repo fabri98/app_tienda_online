@@ -38,10 +38,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(http -> {
                     // Configuramos los endpoints públicos
                     http.requestMatchers(HttpMethod.POST, "/tienda/auth/**").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/tienda/productos").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/tienda/productos/**").permitAll();
 
                     //Configuramos los endpoints privados
-                    http.requestMatchers(HttpMethod.POST, "/tienda/productos").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/tienda/productos/**").hasRole("ADMIN");
 
                     // el método denyAll rechaza cualquier petición a una ruta no espificada
                     http.anyRequest().authenticated();
