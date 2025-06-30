@@ -7,15 +7,13 @@ import com.tienda_api_rest.model.Producto;
 public class ProductoMapper {
 
     public static Producto toEntity(ProductoRequestDTO productoRequestDTO){
-        Producto producto = Producto.builder()
+        return Producto.builder()
                 .numProducto(productoRequestDTO.numProducto())
                 .nombre(productoRequestDTO.nombre())
                 .precio(productoRequestDTO.precio())
                 .stock(productoRequestDTO.stock())
                 .categoria(productoRequestDTO.categoria())
                 .build();
-
-        return producto;
     }
 
     public static ProductoResponseDTO toResponseDTO(Producto producto){
@@ -24,7 +22,8 @@ public class ProductoMapper {
                 producto.getNombre(),
                 producto.getPrecio(),
                 producto.getStock(),
-                producto.getCategoria().getNombre()
+                producto.getCategoria().getNombre(),
+                producto.getImagenUrl()
         );
     }
 }

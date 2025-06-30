@@ -33,4 +33,7 @@ public class Producto {
     @Valid
     @NotNull(message = "La categoria no puede ser null")
     private Categoria categoria;
+
+    @Column(name = "imagen_url")
+    private String imagenUrl;
 }

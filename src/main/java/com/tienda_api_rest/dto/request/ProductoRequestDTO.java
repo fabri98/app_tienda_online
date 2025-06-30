@@ -1,8 +1,10 @@
 package com.tienda_api_rest.dto.request;
 
 import com.tienda_api_rest.model.Categoria;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import org.springframework.web.multipart.MultipartFile;
 
 public record ProductoRequestDTO(
         @NotNull(message = "El numero de producto no puede ser null")
@@ -17,6 +19,8 @@ public record ProductoRequestDTO(
 
         @Valid
         @NotNull(message = "La categoria no puede ser null")
-        Categoria categoria
+        Categoria categoria,
+
+        MultipartFile imagen
 ) {
 }

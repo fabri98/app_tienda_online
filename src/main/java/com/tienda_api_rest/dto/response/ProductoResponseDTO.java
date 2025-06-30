@@ -6,6 +6,7 @@ public record ProductoResponseDTO(
         String nombre,
         double precio,
         int stock,
-        String categoria
+        String categoria,
+        String imageUrl
 ) {
 }
