@@ -35,28 +35,28 @@ public class ProductoService {
 
     // crea un registro de producto
     @Transactional
-    public ProductoResponseDTO crearProducto(ProductoRequestDTO productoRequestDTO){
+    public ProductoResponseDTO crearProducto(ProductoRequestDTO productoRequestDTO) {
 
-        try {
-            Producto productoEntity = ProductoMapper.toEntity(productoRequestDTO);
+        Producto productoEntity = ProductoMapper.toEntity(productoRequestDTO);
 
-            // Verificamos si la categoria ya existe, de ser así establecemos la relacion.
-            // Caso contrario, creamos la categoria en cascada
-            Optional<Categoria> categoriaOptional = categoriaRepository.findByIdCategoriaOrNombreIgnoreCase(
-                    productoRequestDTO.categoria().getIdCategoria(),
-                    productoRequestDTO.categoria().getNombre());
-            categoriaOptional.ifPresent(productoEntity::setCategoria);
+        // Verificamos si la categoria ya existe, de ser así establecemos la relacion.
+        // Caso contrario, creamos la categoria en cascada
+        Optional<Categoria> categoriaOptional = categoriaRepository.findByIdCategoriaOrNombreIgnoreCase(
+                productoRequestDTO.categoria().getIdCategoria(),
+                productoRequestDTO.categoria().getNombre());
+        categoriaOptional.ifPresent(productoEntity::setCategoria);
 
-            // Cargamos la imagen a la nube
-            if (productoRequestDTO.imagen() != null && !productoRequestDTO.imagen().isEmpty()){
+        // Verificamos que la imagen no sea null o que su contenido este vacio
+        // Si esto se cumple cargamos la imagen
+        if (productoRequestDTO.imagen() != null && !productoRequestDTO.imagen().isEmpty()) {
+            try {
                 String imagenUrl = cloudinaryService.subirImagen(productoRequestDTO.imagen());
                 productoEntity.setImagenUrl(imagenUrl);
+            } catch (IOException e) {
+                throw new CloudinaryUploadException("Error al subir la imagen a Cloudinary");
             }
-
-            return ProductoMapper.toResponseDTO(productoRepository.save(productoEntity));
-        }catch (IOException e) {
-            throw new CloudinaryUploadException("Error al subir la imagen a Cloudinary");
         }
+        return ProductoMapper.toResponseDTO(productoRepository.save(productoEntity));
     }
 
     // Retorna una lista con todos los registro de productos
@@ -88,6 +88,14 @@ public class ProductoService {
         productoEntity.setStock(productoRequestDTO.stock());
         productoEntity.setCategoria(productoRequestDTO.categoria());
 
+        if (productoRequestDTO.imagen() != null && !productoRequestDTO.imagen().isEmpty()) {
+            try {
+                String imagenUrl = cloudinaryService.subirImagen(productoRequestDTO.imagen());
+                productoEntity.setImagenUrl(imagenUrl);
+            } catch (IOException e) {
+                throw new CloudinaryUploadException("Error al subir la imagen a Cloudinary");
+            }
+        }
         return ProductoMapper.toResponseDTO(productoEntity);
     }
 
